@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:db.sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  password  String   
+  surveys   Survey[] // Relacionamento para enquetes criadas pelo usuário
+}
+
+model Survey {
+  id        Int        @id @default(autoincrement())
+  title     String
+  creator   User       @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  createdAt DateTime   @default(now())
+  questions Question[] // Relacionamento para as questões da enquete
+}
+
+model Question {
+  id       Int      @id @default(autoincrement())
+  text     String
+  survey   Survey   @relation(fields: [surveyId], references: [id])
+  surveyId Int
+  answers  Answer[] // Relacionamento para as respostas associadas
+}
+
+model Answer {
+  id          Int      @id @default(autoincrement())
+  content     String
+  question    Question @relation(fields: [questionId], references: [id])
+  questionId  Int
+  submittedAt DateTime @default(now())
+}
