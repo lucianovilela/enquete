@@ -1,11 +1,11 @@
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+
 
 const { gerarHashSenha } = require('../util');
 
 module.exports = async function (fastify, opts) {
-
+    const prisma = fastify.prisma;
     // Rota para criar um usuário
     fastify.post('/users', async (request, reply) => {
         const { email, password } = request.body;
